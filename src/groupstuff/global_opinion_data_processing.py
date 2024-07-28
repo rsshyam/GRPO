@@ -35,7 +35,14 @@ COUNTRIES=[
 
 
 def load_and_prepare_data(dataset_name: str, split: str, group_filter: List[str], cache_dir: str = None):
-    dataset = datasets.load_dataset(dataset_name, cache_dir=cache_dir)["train"]
+    try:
+        # Try to load the dataset from the Hugging Face Hub
+        dataset = datasets.load_dataset(dataset_name, cache_dir=cache_dir)["train"]
+    except Exception as e:
+        print(f"Error loading dataset from Hugging Face Hub: {e}")
+        print("Loading dataset from local storage...")
+        dataset = datasets.load_dataset("/home/uceesr4/Group-robust-preference-optimization/llm_global_opinions")["train"]
+    #dataset = datasets.load_dataset(dataset_name, cache_dir=cache_dir)["train"]
     #print(dataset)                                                                       
     df = pd.DataFrame(dataset)
     df['qkey'] = df.index
